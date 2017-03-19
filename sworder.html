@@ -1,0 +1,44 @@
+<html>
+	<head>
+	<title>Sworder</title>
+	<script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/player.js"></script>
+	<script type="text/javascript" src="js/projectile.js"></script>
+	<script type="text/javascript" src="js/events.js"></script>
+	</head>
+
+	<body onload="main()">
+		<canvas id="gameCanvas" style="display: none"></canvas>
+		<div id="titleText" class="titleTextContainer"><img class="titleText" src="resources/titleText.png" /></div>
+		<audio src="resources/maintheme.mp4" autoplay loop></audio>
+		<p class="attribution">Song - "Teside" by Michael Palluzzi</p>
+	</body>	
+	<style>
+	 html, body {
+	 	width: 100%;
+	 	height: 100%;
+	 	margin: 0px;
+	 	background-color: #90C695;
+	 }
+	 .attribution {
+	 	position: fixed;
+	 	bottom: 0;
+	 	right: 10;
+	 }
+	 .titleTextContainer {
+	 	position: relative;
+	 	top: 50%;
+	 	left: 50%;
+	 	margin-top: -200px;
+	 	margin-left: -750px;
+	 	animation: fadeIn 1s infinite alternate;
+	 }
+
+	 @keyframes fadeIn {
+	 	from { opacity: 0; }
+	 }
+
+
+
+</html>

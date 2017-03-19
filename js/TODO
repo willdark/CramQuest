@@ -1,0 +1,12 @@
+TODO
+1. Implement acceleration for changing directions --- Done
+2. Make projectiles disappear --- Done
+3. Background --- Done
+4. Resizing the canvas when the window size changes.
+5. Make diagonal speed the same as lateral speed.
+6. Music --- Done
+7. Objects should probably only know about their position. The game should query for their position and decide if they need to be disposed of.
+  - The player should not be using an event to generate a projectile. The game should listen for a click, then tell the player to create a projectile and return it. The player can still store a list of its own projectiles.
+  - Similarly, the game should probably be deciding when it is appropriate to destroy a projectile.
+
+8. Make the projectiles come out the end of the player.
