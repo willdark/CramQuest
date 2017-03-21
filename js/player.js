@@ -5,11 +5,13 @@ function Player(x, y, canvasWidth, canvasHeight) {
 	this.__sprite = new createjs.Bitmap("resources/testicles.png");
 	this.__sprite.x = x;
 	this.__sprite.y = y;
-	this.__sprite.scaleX = .25,
-	this.__sprite.scaleY = .25,
-	this.__sprite.regX = 360,
-	this.__sprite.regY = 360,
+	this.__sprite.scaleX = .25;
+	this.__sprite.scaleY = .25;
+	this.__sprite.regX = 360;
+	this.__sprite.regY = 360;
 
+	this.get_sprite = function() { return this.__sprite };
+	
 	this.__projectiles = [];
 
 	this.__canvasWidth = canvasWidth;
@@ -28,6 +30,9 @@ function Player(x, y, canvasWidth, canvasHeight) {
 	this.get_playerReactor = function() { return this.__playerReactor };
 	this.__playerReactor.registerEvent('addProjectile');
 	this.__playerReactor.registerEvent('removeProjectile');
+
+	this.set_displayObject = function(displayObject) { this.__displayObject = displayObject };
+	this.get_displayObject = function() { return this.__displayObject };
 
 	//Add handlers
 	window.addEventListener("keydown", function(event) {
