@@ -21,6 +21,8 @@ class Game {
         this.__titleDisplayObject = null;
 
         this.__player = null;
+        this.__playerReactor = null;
+        this.__playerDisplayObject = null;
 
         // Listen for game start
         if (document.addEventListener) {
@@ -40,12 +42,13 @@ class Game {
         var that = this;
         this.hideMainMenu();
         this.initializePlayer();
-        this.initializeTicker();
+        this.initializeListeners();
     }
 
     showMainMenu() {
         //Show the main menu
         this.__titleDisplayObject = this.__stage.addChild(this.__titleImg);
+        this.initializeTicker();
     }
 
     hideMainMenu() {
@@ -63,9 +66,22 @@ class Game {
     }
 
     initializePlayer() {
+        var that = this;
         this.__player = new Player(this.__canvas.width/2, this.__canvas.height/2, this.__canvas.width, this.__canvas.height); //TODO: Fix this. It's dumb.
         // this.__player.set_displayObject(this.__stage.addChild(this.__player.get_sprite()));
-        this.__stage.addChild(this.__player.get_sprite());
+        this.__playerDisplayObject = this.__stage.addChild(this.__player.sprite);
+
+        try {
+            this.__player.playerReactor.addEventListener('addProjectile', function(projectile) {
+                projectile.displayObject = that.__stage.addChildAt(projectile.sprite, that.__stage.getChildIndex(that.__playerDisplayObject));
+            });
+            this.__player.playerReactor.addEventListener('removeProjectile', function(projectile) {
+                that.__stage.removeChild(projectile.displayObject);
+            });
+        }
+        catch(e) {
+            console.log("Failed to initialize a player reactor event");
+        }
     }
 
     initializeTicker() {
@@ -74,5 +90,9 @@ class Game {
         createjs.Ticker.addEventListener("tick", function() {
             that.update(); //addEventListener does not like it when we pass class methods instead of function literals
         });
+    }
+
+    initializeListeners() {
+        // initialize the click listener
     }
 }
