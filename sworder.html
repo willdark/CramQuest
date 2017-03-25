@@ -6,13 +6,14 @@
 	<script type="text/javascript" src="js/player.js"></script>
 	<script type="text/javascript" src="js/projectile.js"></script>
 	<script type="text/javascript" src="js/events.js"></script>
+	<script type="text/javascript" src="js/game.js"></script>
+	<script type="text/javascript" src="js/menu.js"></script>
 	</head>
 
-	<body onload="main()">
+	<body onload="init()">
 		<canvas id="gameCanvas" style="display: none"></canvas>
 		<div id="titleText" class="titleTextContainer"><img class="titleText" src="resources/titleText.png" /></div>
-		<audio src="resources/maintheme.mp4" autoplay loop></audio>
-		<p class="attribution">Song - "Teside" by Michael Palluzzi</p>
+		<!-- <audio src="resources/maintheme.mp4" autoplay loop></audio> -->
 	</body>	
 	<style>
 	 html, body {
@@ -21,11 +22,11 @@
 	 	margin: 0px;
 	 	background-color: #90C695;
 	 }
-	 .attribution {
+/*	 .attribution {
 	 	position: fixed;
 	 	bottom: 0;
 	 	right: 10;
-	 }
+	 }*/
 	 .titleTextContainer {
 	 	position: relative;
 	 	top: 50%;
@@ -33,6 +34,7 @@
 	 	margin-top: -200px;
 	 	margin-left: -750px;
 	 	animation: fadeIn 1s infinite alternate;
+	 	display: none;
 	 }
 
 	 @keyframes fadeIn {
