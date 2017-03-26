@@ -29,7 +29,15 @@ class Player {
         this.__movingUp = false;
 
         this.__projectiles = [];
+        this.__isShooting = false;
+        this.__lastShotInstant = Date.now();
+        var SideEnum = {
+            left : -1,
+            right: 1,
+        }
+        this.__lastShotSide = SideEnum.left;
 
+        
         this.__playerReactor = new Reactor();
         this.__playerReactor.registerEvent('addProjectile');
         this.__playerReactor.registerEvent('removeProjectile');
@@ -43,19 +51,27 @@ class Player {
             that.keyupListener(event);
         }, false);
 
-        window.addEventListener("click", function(event) {
-            that.shoot();
+        window.addEventListener("mousedown", function(event) {
+            that.startShooting();
+        }, false);
+
+        window.addEventListener("mouseup", function(event) {
+            that.stopShooting();
         }, false);
 
     }
 
     get sprite        ()              { return this.__sprite }
+    get x     ()                      { return this.__sprite.x }
+    get y     ()                      { return this.__sprite.y }
+    get xBoundary     ()              { return this.__xBoundary }
+    get yBoundary     ()              { return this.__yBoundary }
+    get angle         ()              { return this.__angle }
     set displayObject (displayObject) { this.__displayObject = displayObject }
     get displayObject ()              { return this.__displayObject }
     get projectiles   ()              { return this.__projectiles }
+    get isShooting    ()              { return this.__isShooting }
     get playerReactor ()              { return this.__playerReactor }
-    get xBoundary     ()              { return this.__xBoundary }
-    get yBoundary     ()              { return this.__yBoundary }
 
     update(mouseX, mouseY) {
         //Set x-axis speed
@@ -85,6 +101,9 @@ class Player {
         this.rotate(mouseX, mouseY);
         this.applyFriction();
 
+        if (this.__isShooting) {
+            this.shoot();
+        }
         this.updateProjectiles()
 
     }
@@ -101,6 +120,41 @@ class Player {
             }
             //TODO: Remove projectile from the array and delete it
         });
+    }
+
+    shoot() {
+        if (Date.now() - this.__lastShotInstant >= 100) {
+
+            var projectile = new Projectile(
+                this.__sprite.x + (90 * Math.cos(this.__angle * Math.PI/180)),
+                this.__sprite.y + (90 * Math.sin(this.__angle * Math.PI/180)),
+                this.__angle);
+            // should tell the projectile the side and should take care of the delta.
+            this.__projectiles.push(projectile);
+            this.__playerReactor.dispatchEvent('addProjectile', projectile); //raise an event so that the game knows to draw a new projectile
+
+            this.__lastShotInstant = Date.now();
+        }
+
+    }
+
+    startShooting() {
+        this.__isShooting = true;
+    }
+
+    stopShooting() {
+        this.__isShooting = false;
+    }
+
+    rotate(mouseX, mouseY) {
+        this.__angle = Math.atan2(mouseY - this.__sprite.y, mouseX - this.__sprite.x);
+        this.__angle = this.__angle * (180/Math.PI);
+
+        if(this.__angle < 0) {
+            this.__angle = 360 - (-this.__angle);
+        }
+
+        this.__sprite.rotation = 90 + this.__angle;
     }
 
     keydownListener(event) {
@@ -137,23 +191,6 @@ class Player {
                 this.__movingUp = false;
                 break;
         }
-    }
-
-    shoot() {
-        var projectile = new Projectile(this);
-        this.__projectiles.push(projectile);
-        this.__playerReactor.dispatchEvent('addProjectile', projectile); //raise an event so that the game knows to draw a new projectile
-    }
-
-    rotate(mouseX, mouseY) {
-        this.__angle = Math.atan2(mouseY - this.__sprite.y, mouseX - this.__sprite.x);
-        this.__angle = this.__angle * (180/Math.PI);
-
-        if(this.__angle < 0) {
-            this.__angle = 360 - (-this.__angle);
-        }
-
-        this.__sprite.rotation = 90 + this.__angle;
     }
 
     enforceBoundaries() {

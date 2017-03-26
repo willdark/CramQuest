@@ -8,6 +8,8 @@
 	<script type="text/javascript" src="js/events.js"></script>
 	<script type="text/javascript" src="js/game.js"></script>
 	<script type="text/javascript" src="js/menu.js"></script>
+	<script type="text/javascript" src="js/enemy.js"></script>
+	<script type="text/javascript" src="js/utilities.js"></script>
 	</head>
 
 	<body onload="init()">
@@ -20,7 +22,9 @@
 	 	width: 100%;
 	 	height: 100%;
 	 	margin: 0px;
-	 	background-color: #90C695;
+	 	height: 100%;
+		background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+		overflow: hidden;
 	 }
 /*	 .attribution {
 	 	position: fixed;
@@ -40,7 +44,5 @@
 	 @keyframes fadeIn {
 	 	from { opacity: 0; }
 	 }
-
-
 
 </html>

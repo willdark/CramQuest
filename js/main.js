@@ -22,7 +22,7 @@ function init() {
     // Listen for game start
     if (document.addEventListener) {
         document.addEventListener('keydown', function(e) {
-            if (e.keyCode == 13) {
+            if (e.keyCode == 13) { // Enter
                 if (e.preventDefault) {
                     e.preventDefault();
                 }
@@ -35,7 +35,7 @@ function init() {
                     game.resume();
                 }
             }
-            if (e.keyCode == 27) {
+            if (e.keyCode == 27) { // Escape
                 if (e.preventDefault) {
                     e.preventDefault();
                 }

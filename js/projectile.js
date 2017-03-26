@@ -1,18 +1,16 @@
 class Projectile {
-	constructor(player) {
-		this.__sprite = new createjs.Bitmap("resources/projectile.png");
+	constructor(x, y, angle) {
+		this.__sprite = new createjs.Bitmap("resources/projectilesprite.png");
 
-		this.__player = player;
+		this.__sprite.x = x;
+		this.__sprite.y = y
 
-		this.__sprite.x = player.__sprite.x; //TODO: Make the projectile originate at the nose instead of the center of the player
-		this.__sprite.y = player.__sprite.y;
-
-		this.__sprite.scaleX = .1;
-		this.__sprite.scaleY = .1;
+		this.__sprite.scaleX = .2;
+		this.__sprite.scaleY = .2;
 		this.__sprite.regX = 86;
 		this.__sprite.regY = 192;
-		this.__angle = player.__angle;
-		this.__speed = 10;
+		this.__angle = angle;
+		this.__speed = 20;
 		this.__accel = 1;
 		this.__maxSpeed = 5;
 		this.__speedX = Math.cos(this.__angle * Math.PI/180) * this.__speed; //TODO: Use standard deg->rad function
@@ -22,12 +20,19 @@ class Projectile {
 		this.__maxBoundReached = false;
 		this.__shouldBeDestroyed = false;
 
+        this.__damage = 20;
+
 		this.__displayObject;
 	}
 	
 	set displayObject (displayObject) { this.__displayObject = displayObject }
 	get displayObject ()			  { return this.__displayObject }
 	get sprite        ()			  { return this.__sprite }
+    get x             ()              { return this.__sprite.x }
+    get y             ()              { return this.__sprite.y }
+    get width         ()              { return this.__sprite.image.width * this.__sprite.scaleX }
+    get height        ()              { return this.__sprite.image.height * this.__sprite.scaleY }
+    get damage        ()              { return this.__damage }
 
 	update(mouseX, mouseY) {
 		this.__sprite.x += this.__speedX;
@@ -35,7 +40,9 @@ class Projectile {
 
         this.enforceBoundaries();
 
-		this.__shouldBeDestroyed = this.__maxBoundReached;
+        if (!this.__shouldBeDestroyed) {
+            this.__shouldBeDestroyed = this.__maxBoundReached;  
+        }
 	}
 
 	enforceBoundaries() {
@@ -59,5 +66,9 @@ class Projectile {
 
     shouldBeDestroyed() {
     	return this.__shouldBeDestroyed;
+    }
+
+    destroy() {
+        this.__shouldBeDestroyed = true;
     }
 }

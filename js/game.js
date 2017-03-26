@@ -14,6 +14,10 @@ class Game {
         this.__playerDisplayObject = null;
 
         this.__audio = new Audio('resources/gametheme.mp4');
+        this.__audio.volume = .1;
+
+        this.__enemies = [];
+        this.__lastEnemyGenerated = Date.now();
     }
 
     get hasStarted ()               { return this.__hasStarted }
@@ -45,8 +49,25 @@ class Game {
     }
 
     update() {
+        var that = this;
+
         if(this.__player) { this.__player.update(this.__stage.mouseX, this.__stage.mouseY); }
         this.__stage.update();
+
+        if (Date.now() - this.__lastEnemyGenerated >= 2000) {
+            this.generateEnemy();
+            this.__lastEnemyGenerated = Date.now();
+        }
+
+        //check collisions
+        this.checkCollisions();
+        this.__enemies.forEach(function(e, index, enemies) {
+            e.update();
+            if (e.isDead) {
+                that.__stage.removeChild(e.displayObject);
+                that.__enemies.splice(index, 1);
+            }
+        });
     }
 
     initializePlayer() {
@@ -85,5 +106,27 @@ class Game {
 
     pauseSong() {
         this.__audio.pause();
+    }
+
+    generateEnemy() {
+        var enemy = new Enemy(getRandomInRange(100, this.__canvas.width),
+            getRandomInRange(100,this.__canvas.height), this.__canvas.width, this.__canvas.height);
+        this.__enemies.push(enemy);
+        enemy.displayObject = this.__stage.addChild(enemy.sprite);
+    }
+
+    checkCollisions() {
+        var that = this;
+        this.__player.projectiles.forEach(function(projectile) {
+            that.__enemies.forEach(function(enemy) {
+                if (projectile.x <= enemy.x + enemy.width/2 && 
+                        projectile.x + projectile.width/2 >= enemy.x &&
+                            projectile.y <= enemy.y + enemy.height/2 && 
+                                projectile.y + projectile.height/2 >= enemy.y) {
+                    enemy.hit(projectile.damage);
+                    projectile.destroy();
+                }
+            });
+        });
     }
 }
