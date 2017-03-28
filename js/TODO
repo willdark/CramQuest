@@ -15,3 +15,9 @@ Make a constants sheet
 
 There should be a class for some of the player values. One of the obvious ones is to keep track of the player's animation variables. They are cluttering up the class.
 
+9. Sprites
+- main char
+- Enemies
+- few frames for weapon
+Characters
+
