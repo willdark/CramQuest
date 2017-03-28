@@ -1,5 +1,5 @@
 class Projectile {
-	constructor(x, y, angle) {
+	constructor(x, y, angle, canvasWidth, canvasHeight) {
 		this.__sprite = new createjs.Bitmap("resources/projectilesprite.png");
 
 		this.__sprite.x = x;
@@ -19,6 +19,8 @@ class Projectile {
 
 		this.__maxBoundReached = false;
 		this.__shouldBeDestroyed = false;
+        this.__xBoundary = canvasWidth;
+        this.__yBoundary = canvasHeight;
 
         this.__damage = 20;
 

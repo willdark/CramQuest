@@ -11,6 +11,11 @@ class Player {
         this.__sprite.regX = 360;
         this.__sprite.regY = 360;
 
+        this.__image = new Image();
+        this.__image.src = "resources/testicles.png";
+        this.__imageInverted = new Image();
+        this.__imageInverted.src = "resources/testiclesInverted.png";
+
         this.__speed = 0;
         this.__speedX = 0;
         this.__speedY = 0;
@@ -31,12 +36,20 @@ class Player {
         this.__projectiles = [];
         this.__isShooting = false;
         this.__lastShotInstant = Date.now();
+        this.__shotDelta = 100;
         var SideEnum = {
             left : -1,
             right: 1,
         }
         this.__lastShotSide = SideEnum.left;
 
+        // Health and stuff
+        this.__health = 100;
+        this.__collisionDamage = 20;
+        this.__isDead = false;
+        this.__timeLastHit = 0;
+        this.__timeLastBlink = 0;
+        this.__isInverted = false;
         
         this.__playerReactor = new Reactor();
         this.__playerReactor.registerEvent('addProjectile');
@@ -61,17 +74,20 @@ class Player {
 
     }
 
-    get sprite        ()              { return this.__sprite }
-    get x     ()                      { return this.__sprite.x }
-    get y     ()                      { return this.__sprite.y }
-    get xBoundary     ()              { return this.__xBoundary }
-    get yBoundary     ()              { return this.__yBoundary }
-    get angle         ()              { return this.__angle }
-    set displayObject (displayObject) { this.__displayObject = displayObject }
-    get displayObject ()              { return this.__displayObject }
-    get projectiles   ()              { return this.__projectiles }
-    get isShooting    ()              { return this.__isShooting }
-    get playerReactor ()              { return this.__playerReactor }
+    get sprite          ()              { return this.__sprite }
+    get x               ()              { return this.__sprite.x }
+    get y               ()              { return this.__sprite.y }
+    get width           ()              { return this.__sprite.image.width * this.__sprite.scaleX }
+    get height          ()              { return this.__sprite.image.height * this.__sprite.scaleY }
+    get xBoundary       ()              { return this.__xBoundary }
+    get yBoundary       ()              { return this.__yBoundary }
+    get angle           ()              { return this.__angle }
+    set displayObject   (displayObject) { this.__displayObject = displayObject }
+    get displayObject   ()              { return this.__displayObject }
+    get projectiles     ()              { return this.__projectiles }
+    get isShooting      ()              { return this.__isShooting }
+    get playerReactor   ()              { return this.__playerReactor }
+    get collisionDamage ()              { return this.__collisionDamage }
 
     update(mouseX, mouseY) {
         //Set x-axis speed
@@ -104,8 +120,29 @@ class Player {
         if (this.__isShooting) {
             this.shoot();
         }
-        this.updateProjectiles()
+        this.updateProjectiles();
 
+        this.updateDisplay();
+    }
+
+    updateDisplay() {
+        // TODO: Fix this so that the number of blinks is consistent
+        if (this.shouldBlink()) {
+            console.log("should blink: true");
+            this.__timeLastBlink = Date.now();
+            if (this.__isInverted) {
+                this.__sprite.image = this.__image;
+                this.__isInverted = false;
+            }
+            else {
+                this.__sprite.image = this.__imageInverted;
+                this.__isInverted = true;
+            }
+        }
+        else if (!this.isHit() && this.__isInverted) {
+            this.__sprite.image = this.__image;
+            this.__isInverted = false;
+        }
     }
 
     updateProjectiles() {
@@ -123,12 +160,12 @@ class Player {
     }
 
     shoot() {
-        if (Date.now() - this.__lastShotInstant >= 100) {
-
+        if (Date.now() - this.__lastShotInstant >= this.__shotDelta) {
             var projectile = new Projectile(
                 this.__sprite.x + (90 * Math.cos(this.__angle * Math.PI/180)),
                 this.__sprite.y + (90 * Math.sin(this.__angle * Math.PI/180)),
-                this.__angle);
+                this.__angle,
+                this.__xBoundary, this.yBoundary);
             // should tell the projectile the side and should take care of the delta.
             this.__projectiles.push(projectile);
             this.__playerReactor.dispatchEvent('addProjectile', projectile); //raise an event so that the game knows to draw a new projectile
@@ -136,6 +173,32 @@ class Player {
             this.__lastShotInstant = Date.now();
         }
 
+    }
+
+    // Returns is the player is currently hit and invulnerable
+    isHit() {
+        console.log(Date.now() - this.__timeLastHit < 2000);
+        return Date.now() - this.__timeLastHit < 2000;
+    }
+
+    hit(damage) {
+        //blink and decrement health
+        if (!this.isHit()) {
+            console.log("hit");
+            this.__health -= damage;
+            this.__timeLastHit = Date.now();
+            if (this.__health <= 0) {
+                this.destroy();
+            }
+        }
+    }
+
+    shouldBlink() {
+        return this.isHit() && Date.now() - this.__timeLastBlink > 200;
+    }
+
+    destroy() {
+        this.__isDead = true;
     }
 
     startShooting() {

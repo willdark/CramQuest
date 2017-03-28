@@ -117,16 +117,25 @@ class Game {
 
     checkCollisions() {
         var that = this;
-        this.__player.projectiles.forEach(function(projectile) {
-            that.__enemies.forEach(function(enemy) {
-                if (projectile.x <= enemy.x + enemy.width/2 && 
-                        projectile.x + projectile.width/2 >= enemy.x &&
-                            projectile.y <= enemy.y + enemy.height/2 && 
-                                projectile.y + projectile.height/2 >= enemy.y) {
+        that.__enemies.forEach(function(enemy) {
+            that.__player.projectiles.forEach(function(projectile) {
+                if(checkForCollision(projectile.y - projectile.height/2, projectile.x + projectile.width/2,
+                    projectile.y + projectile.height/2, projectile.x - projectile.width/2,
+                        enemy.y - enemy.height/2, enemy.x + enemy.width/2,
+                            enemy.y + enemy.height/2, enemy.x - enemy.width/2)) {
+                // if (projectile.x <= enemy.x + enemy.width/2 && 
+                //         projectile.x + projectile.width/2 >= enemy.x &&
+                //             projectile.y <= enemy.y + enemy.height/2 && 
+                //                 projectile.y + projectile.height/2 >= enemy.y) {
                     enemy.hit(projectile.damage);
                     projectile.destroy();
                 }
             });
+            if(checkForCollision(that.__player.y - that.__player.height/2, that.__player.x + that.__player.width/2,
+                that.__player.y + that.__player.height/2, that.__player.x - that.__player.width/2,
+                    enemy.y - enemy.height/2, enemy.x + enemy.width/2, enemy.y + enemy.height/2, enemy.x - enemy.width/2)) {
+                that.__player.hit(that.__player.collisionDamage);
+            }
         });
     }
 }
