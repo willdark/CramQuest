@@ -128,7 +128,6 @@ class Player {
     updateDisplay() {
         // TODO: Fix this so that the number of blinks is consistent
         if (this.shouldBlink()) {
-            console.log("should blink: true");
             this.__timeLastBlink = Date.now();
             if (this.__isInverted) {
                 this.__sprite.image = this.__image;
@@ -169,6 +168,7 @@ class Player {
             // should tell the projectile the side and should take care of the delta.
             this.__projectiles.push(projectile);
             this.__playerReactor.dispatchEvent('addProjectile', projectile); //raise an event so that the game knows to draw a new projectile
+            projectile.playSound();
 
             this.__lastShotInstant = Date.now();
         }
@@ -177,14 +177,12 @@ class Player {
 
     // Returns is the player is currently hit and invulnerable
     isHit() {
-        console.log(Date.now() - this.__timeLastHit < 2000);
         return Date.now() - this.__timeLastHit < 2000;
     }
 
     hit(damage) {
         //blink and decrement health
         if (!this.isHit()) {
-            console.log("hit");
             this.__health -= damage;
             this.__timeLastHit = Date.now();
             if (this.__health <= 0) {

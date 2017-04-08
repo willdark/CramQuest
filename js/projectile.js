@@ -25,6 +25,9 @@ class Projectile {
         this.__damage = 20;
 
 		this.__displayObject;
+
+        this.__sound = new Audio("resources/Lazer_2b.wav");
+        this.__sound.volume = .1;
 	}
 	
 	set displayObject (displayObject) { this.__displayObject = displayObject }
@@ -34,7 +37,7 @@ class Projectile {
     get y             ()              { return this.__sprite.y }
     get width         ()              { return this.__sprite.image.width * this.__sprite.scaleX }
     get height        ()              { return this.__sprite.image.height * this.__sprite.scaleY }
-    get damage        ()              { return this.__damage }
+    get damage        ()              { return this.__damage };
 
 	update(mouseX, mouseY) {
 		this.__sprite.x += this.__speedX;
@@ -72,5 +75,9 @@ class Projectile {
 
     destroy() {
         this.__shouldBeDestroyed = true;
+    }
+
+    playSound() {
+        this.__sound.play();
     }
 }

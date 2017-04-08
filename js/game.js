@@ -123,10 +123,6 @@ class Game {
                     projectile.y + projectile.height/2, projectile.x - projectile.width/2,
                         enemy.y - enemy.height/2, enemy.x + enemy.width/2,
                             enemy.y + enemy.height/2, enemy.x - enemy.width/2)) {
-                // if (projectile.x <= enemy.x + enemy.width/2 && 
-                //         projectile.x + projectile.width/2 >= enemy.x &&
-                //             projectile.y <= enemy.y + enemy.height/2 && 
-                //                 projectile.y + projectile.height/2 >= enemy.y) {
                     enemy.hit(projectile.damage);
                     projectile.destroy();
                 }
