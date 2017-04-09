@@ -126,10 +126,10 @@ class Game {
     }
 
     tryGenerateEnemies() {
-        // if (Date.now() - this.__lastEnemyGenerated >= 2000) {
-        //     this.generateEnemy();
-        //     this.__lastEnemyGenerated = Date.now();
-        // }
+        if (Date.now() - this.__lastEnemyGenerated >= 2000) {
+            this.generateEnemy();
+            this.__lastEnemyGenerated = Date.now();
+        }
     }
 
     generateEnemy() {
