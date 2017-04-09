@@ -7,8 +7,8 @@ class Projectile {
 
 		this.__sprite.scaleX = .2;
 		this.__sprite.scaleY = .2;
-		this.__sprite.regX = 86;
-		this.__sprite.regY = 192;
+		this.__sprite.regX = 55;
+		this.__sprite.regY = 100;
 		this.__angle = angle;
 		this.__speed = 20;
 		this.__accel = 1;

@@ -54,10 +54,7 @@ class Game {
         if(this.__player) { this.__player.update(this.__stage.mouseX, this.__stage.mouseY); }
         this.__stage.update();
 
-        if (Date.now() - this.__lastEnemyGenerated >= 2000) {
-            this.generateEnemy();
-            this.__lastEnemyGenerated = Date.now();
-        }
+        this.tryGenerateEnemies();
 
         //check collisions
         this.checkCollisions();
@@ -72,7 +69,7 @@ class Game {
 
     initializePlayer() {
         var that = this;
-        this.__player = new Player(this.__canvas.width/2, this.__canvas.height/2, this.__canvas.width, this.__canvas.height); //TODO: Fix this. It's dumb.
+        this.__player = new Player(this.__canvas.width/2, this.__canvas.height/2, this.__canvas.width, this.__canvas.height, this.__stage, this.__graphics); //TODO: Fix this. It's dumb.
         this.__playerDisplayObject = this.__stage.addChild(this.__player.sprite);
 
         try {
@@ -108,13 +105,6 @@ class Game {
         this.__audio.pause();
     }
 
-    generateEnemy() {
-        var enemy = new Enemy(getRandomInRange(100, this.__canvas.width),
-            getRandomInRange(100,this.__canvas.height), this.__canvas.width, this.__canvas.height);
-        this.__enemies.push(enemy);
-        enemy.displayObject = this.__stage.addChild(enemy.sprite);
-    }
-
     checkCollisions() {
         var that = this;
         that.__enemies.forEach(function(enemy) {
@@ -133,5 +123,19 @@ class Game {
                 that.__player.hit(that.__player.collisionDamage);
             }
         });
+    }
+
+    tryGenerateEnemies() {
+        // if (Date.now() - this.__lastEnemyGenerated >= 2000) {
+        //     this.generateEnemy();
+        //     this.__lastEnemyGenerated = Date.now();
+        // }
+    }
+
+    generateEnemy() {
+        var enemy = new BasicEnemy(getRandomInRange(100, this.__canvas.width),
+            getRandomInRange(100,this.__canvas.height), this.__canvas.width, this.__canvas.height, this.__player);
+        this.__enemies.push(enemy);
+        enemy.displayObject = this.__stage.addChild(enemy.sprite);
     }
 }

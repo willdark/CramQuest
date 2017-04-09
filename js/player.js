@@ -1,6 +1,8 @@
 class Player {
-    constructor(x, y, canvasWidth, canvasHeight) {
+    constructor(x, y, canvasWidth, canvasHeight, stage) {
         var that = this;
+
+        this.__stage = stage;
 
         //sprite
         this.__sprite = new createjs.Bitmap("resources/testicles.png");
@@ -15,6 +17,8 @@ class Player {
         this.__image.src = "resources/testicles.png";
         this.__imageInverted = new Image();
         this.__imageInverted.src = "resources/testiclesInverted.png";
+
+        this.__particleEmitter = new LineParticleEmitter(this.__stage, 10, 50, 60);
 
         this.__speed = 0;
         this.__speedX = 0;
@@ -120,6 +124,9 @@ class Player {
         if (this.__isShooting) {
             this.shoot();
         }
+
+        this.updateParticles();
+
         this.updateProjectiles();
 
         this.updateDisplay();
@@ -146,7 +153,7 @@ class Player {
 
     updateProjectiles() {
         var that = this;
-        this.__projectiles.forEach(function(currentProjectile, index, projectiles) {
+        this.__projectiles.forEach(function(currentProjectile, index) {
             currentProjectile.update();
             if(currentProjectile.shouldBeDestroyed()) {
                 that.__playerReactor.dispatchEvent('removeProjectile', currentProjectile);
@@ -156,6 +163,13 @@ class Player {
             }
             //TODO: Remove projectile from the array and delete it
         });
+    }
+
+    updateParticles() {
+        if (this.isMoving()) {
+            this.__particleEmitter.emit(this.__sprite.x - 90 * Math.cos(this.__angle * Math.PI/180), this.__sprite.y - 90 * Math.sin(this.__angle * Math.PI/180), this.__angle - 90);
+        }
+        this.__particleEmitter.update();
     }
 
     shoot() {
@@ -281,4 +295,9 @@ class Player {
     isMovingUpOrDown() {
         return (this.__movingUp || this.__movingDown);
     }
+
+    isMoving() {
+        return (this.isMovingUpOrDown() || this.isMovingLeftOrRight());
+    }
+
 }
